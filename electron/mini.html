@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+    />
+    <title>ClipX</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 58px;
+        height: 58px;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #restore {
+        width: 58px;
+        height: 58px;
+        padding: 0;
+        border: none;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
+        cursor: grab;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: none;
+        outline: none;
+        transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+                    filter 0.15s ease;
+      }
+
+      #restore:hover {
+        transform: scale(1.08);
+        filter: drop-shadow(0 4px 12px rgba(168, 85, 247, 0.45));
+      }
+
+      #restore:active {
+        cursor: grabbing;
+        transform: scale(0.93);
+      }
+
+      .mascot-gif {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+        pointer-events: none;
+        user-select: none;
+        -webkit-user-drag: none;
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+      }
+    </style>
+  </head>
+
+  <body>
+    <button id="restore" type="button" title="Click to open ClipX (or drag anywhere)" aria-label="Restore ClipX">
+      <img class="mascot-gif" src="cute-cat-small-pixel-cat-small-lumi.gif" alt="ClipX" draggable="false" />
+    </button>
+
+    <script>
+      const button = document.getElementById("restore");
+      let dragging = false;
+      let moved = false;
+      let startX = 0;
+      let startY = 0;
+
+      button.addEventListener("pointerdown", (event) => {
+        if (event.button !== 0) return;
+        dragging = true;
+        moved = false;
+        startX = event.screenX;
+        startY = event.screenY;
+        if (window.clipx && typeof window.clipx.dragStart === "function") {
+          window.clipx.dragStart(startX, startY);
+        }
+      });
+
+      window.addEventListener("pointermove", (event) => {
+        if (!dragging) return;
+        if (Math.abs(event.screenX - startX) > 3 || Math.abs(event.screenY - startY) > 3) {
+          moved = true;
+        }
+        if (moved && window.clipx && typeof window.clipx.dragMove === "function") {
+          window.clipx.dragMove(event.screenX, event.screenY);
+        }
+      });
+
+      window.addEventListener("pointerup", (event) => {
+        if (!dragging) return;
+        dragging = false;
+        if (window.clipx && typeof window.clipx.dragEnd === "function") {
+          window.clipx.dragEnd(event.screenX, event.screenY);
+        }
+        if (!moved && window.clipx && typeof window.clipx.restoreClipX === "function") {
+          window.clipx.restoreClipX();
+        }
+      });
+    </script>
+  </body>
+</html>
+

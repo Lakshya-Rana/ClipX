@@ -1,0 +1,47 @@
+
+{
+  "name": "clipx",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ClipX - a lightweight desktop snippet manager",
+  "author": "Lakshya Rana",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "electron": "electron electron/main.mjs",
+    "dist": "npm run build && electron-builder --win"
+  },
+  "build": {
+    "appId": "com.clipx.app",
+    "productName": "ClipX",
+    "files": [
+      "electron/**/*",
+      "out/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis"
+    }
+  },
+  "dependencies": {
+    "electron-draggable": "^1.6.2",
+    "next": "16.4.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "babel-plugin-react-compiler": "1.0.0",
+    "electron": "^45.0.0",
+    "electron-builder": "^26.15.3",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.3",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
